@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <title>Gitoyen - python</title>
+    <link rel="stylesheet"
+      href="/theme/css/main.css" />
+
+
+
+    <!--[if IE]>
+      <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+
+  <body id="index" class="home">
+    <header id="banner" class="body">
+      <h1>
+        <a href="/">Gitoyen
+        </a>
+      </h1>
+      <nav>
+        <ul>
+          <li >
+            <a href="/">Accueil</a>
+          </li>
+          <li >
+            <a href="/gitoyen.html">Gitoyen</a>
+          </li>
+          <li >
+            <a href="/services-de-gitoyen.html">Nos Services</a>
+          </li>
+          <li >
+            <a href="/cote-technique.html">Côté technique</a>
+          </li>
+          <li >
+            <a href="/blog.html">Blog</a>
+          </li>
+          <li >
+            <a href="/contact.html">Contact</a>
+          </li>
+        </ul>
+      </nav>
+    </header><!-- /#banner -->
+
+            <aside id="featured" class="body">
+                <article>
+                    <h1 class="entry-title"><a href="/blog/pytest-fixture.html">Pytest Fixture</a></h1>
+<footer class="post-info">
+        <abbr class="published" title="2015-04-14T00:00:00+02:00">
+                Published: Tue 14 April 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/gitoyen.html">gitoyen</a>
+        </address>
+<p>In <a href="/category/tuto.html">tuto</a>.</p>
+<p>tags: <a href="/tag/python.html">python</a> <a href="/tag/dev.html">dev</a> </p>
+</footer><!-- /.post-info --><p>[TOC]</p>
+<h1>toto</h1>
+<p>I am a huge fan of python (one of the best language in my toolbox). And
+when it comes to tests, <a href="http://pytest.org/">pytest</a> is <em>THE</em> library to use.</p>
+<p>I also use <a href="http://flask.pocoo.org/">Flask</a> a lot, so today I will show you
+some of my snippets.</p>
+<p>First one the app fixture:</p>
+<p>```python
+@pytest.fixture(autouse=True)
+def app():
+    """Load flask in testing mode"""
+    app_test = myapp
+    app_test.config['TESTING'] = True
+    app_test.json_encoder = my_encoder</p>
+<pre><code>return app_test.test_client()
+</code></pre>
+<p>```</p>
+<p>This create an app fixture which will be used to test the application, it
+returns a test client to interact with my Flask application.</p>
+<p>It is an adaptation of the documentation [testing skeleton]
+(http://flask.pocoo.org/docs/0.10/testing/#the-testing-skeleton)</p>
+<p>I also replace the json encoder by a custom one (it allows me to dump mock
+object for example).</p>
+<p>```python
+@pytest.yield_fixture
+def request_context(app):
+    """Provide a Flask request context for testing purpose"""</p>
+<pre><code>with app.application.test_request_context() as req_context:
+    yield req_context
+</code></pre>
+<p>```</p>
+<p>This one applies a request context on a testing function, this can be
+useful if you manipulate werzeug interactions (flask request attribute mostly).
+This has to be use when the
+<code>RuntimeError: working outside of application context</code> error is raised.</p>
+<p>In the most common use case you will not need the <code>req_context</code> variable during
+your test. To avoid to have an unused argument, you can simply use the
+<code>@pytest.mark.usefixtures('request_context')</code> decorator on your testing
+function.</p>
+<p>Last one is also an opportunity to talk about
+<a href="http://peewee.readthedocs.org/en/latest/">peewee</a> which is a great lightweight
+ORM. Like a lot of ORM peewee provides a [transaction decorator]
+(http://docs.peewee-orm.com/en/latest/peewee/transactions.html)
+, in unittest you may want to test endpoints without connecting to a db.
+So, here is an example on how you can replace the decorator
+(or contextmanager) by a dummy one.</p>
+<p>```python
+import imp
+import contextlib
+import pytest</p>
+<p>import database</p>
+<p>@pytest.fixture(autouse=True, scope='session')
+def mock_transaction():
+    """Replace the atomic decorator from peewee to a noop one"""</p>
+<pre><code>database.atomic = contextlib.contextmanager(lambda: (yield))
+imp.reload(module.using.db.transactions)
+</code></pre>
+<p>```</p>
+<p>Pytest use a lot of the python flexibility and I must confess that I love it.</p>                </article>
+            </aside><!-- /#featured -->
+
+    <footer id="contentinfo" class="body">
+    </footer>
+
+  </body>
+</html>
