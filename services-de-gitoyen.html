@@ -8,6 +8,12 @@
 
 
 
+    <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700|Lato:400,300,400italic,700' rel='stylesheet' type='text/css'>
+
+    <script src="/theme/scripts/jquery-2.1.4.min.js"></script>
+    <script src="/theme/scripts/jquery.sticky.js"></script>
+    <script src="/theme/scripts/mine.js"></script>
+
     <!--[if IE]>
       <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
@@ -15,39 +21,45 @@
 
   <body id="index" class="home">
     <header id="banner" class="body">
-      <h1>
-        <a href="/">Gitoyen
-        </a>
-      </h1>
-      <nav>
-        <ul>
-          <li >
-            <a href="/">Accueil</a>
-          </li>
-          <li >
-            <a href="/gitoyen.html">Gitoyen</a>
-          </li>
-          <li  class="active">
-            <a href="/services-de-gitoyen.html">Nos Services</a>
-          </li>
-          <li >
-            <a href="/cote-technique.html">Côté technique</a>
-          </li>
-          <li >
-            <a href="/blog.html">Blog</a>
-          </li>
-          <li >
-            <a href="/contact.html">Contact</a>
-          </li>
-        </ul>
-      </nav>
+      <div id="headerContainer">
+        <div id="logo">
+          <img src="/theme/images/logo_blc.png" alt="Gitoyen">
+        </div>
+        <nav>
+          <ul>
+            <li >
+              <a href="/">Accueil</a>
+            </li>
+            <li >
+              <a href="/gitoyen.html">Gitoyen</a>
+            </li>
+            <li  class="active">
+              <a href="/services-de-gitoyen.html">Nos Services</a>
+            </li>
+            <li >
+              <a href="/cote-technique.html">Côté technique</a>
+            </li>
+            <li >
+              <a href="/blog.html">Blog</a>
+            </li>
+            <li >
+              <a href="/contact.html">Contact</a>
+            </li>
+            <li><a href="#" class="icon" id="search"></a></li>
+            <li><a href="#" class="icon" id="twitter"></a></li>
+            <li><a href="#" class="icon" id="rss"></a></li>
+          </ul>
+        </nav>
+      </div>
     </header><!-- /#banner -->
 
 <section id="content" class="body">
     <h1 class="entry-title">Services de Gitoyen</h1>
-    <nav class="toc">
+    <nav id="side-nav">
       <div id="toc"><ul><li><a class="toc-href" href="#" title="Services de Gitoyen">Services de Gitoyen</a><ul><li><a class="toc-href" href="#transit-internet" title="Transit Internet">Transit Internet</a></li><li><a class="toc-href" href="#hebergement-dequipement" title="H&eacute;bergement d" équipement'="">H&eacute;bergement d'&eacute;quipement</a></li><li><a class="toc-href" href="#lir-obtention-de-ressources-internet" title="LIR / Obtention de ressources Internet">LIR / Obtention de ressources Internet</a></li><li><a class="toc-href" href="#commutation-et-routage" title="Commutation et Routage">Commutation et Routage</a></li><li><a class="toc-href" href="#quelques-cas-dusage" title="Quelques cas d" usage'="">Quelques cas d'usage</a></li><li><a class="toc-href" href="#comment-etablir-un-peering-avec-gitoyen" title="Comment &eacute;tablir un peering avec Gitoyen ?">Comment &eacute;tablir un peering avec Gitoyen ?</a></li><li><a class="toc-href" href="#points-de-peering" title="Points de peering">Points de peering</a></li></ul></li></ul></div>
     </nav>
+    <div id="side-content">
+
     
     <p>Gitoyen fournit plusieurs services &agrave; ses membres et ses clients.</p>
 <h1>Description des services</h1>
@@ -127,6 +139,8 @@ mail &agrave; peering (at) gitoyen (dot) net.</p>
 </ul>
 <h2 id="points-de-peering">Points de peering</h2>
 <p>Nos points de peering sont list&eacute;s sur la page de l'AS20766 sur <a href="https://www.peeringdb.com/view.php?asn=20766">peeringdb</a></p>
+
+    </div>
 </section>
 
     <footer id="contentinfo" class="body">
