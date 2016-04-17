@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0"><channel><title>Gitoyen</title><link>/</link><description></description><lastBuildDate>Mon, 07 Mar 2016 20:00:00 +0100</lastBuildDate><item><title>Yet another tutorial about Let's Encrypt</title><link>/blog/yet-another-tutorial-about-lets-encrypt.html</link><description>&lt;p&gt;&lt;img alt="Logo Let's Encrypt" src="//letsencrypt.org/images/letsencrypt-logo-horizontal.svg"/&gt;&lt;/p&gt;
+&lt;p&gt;Voil&amp;agrave; 1 million de certificats &lt;a href="//letsencrypt.org/"&gt;Let's Encrypt&lt;/a&gt; d&amp;eacute;livr&amp;eacute;s (les certificats d&amp;eacute;livr&amp;eacute;s par &lt;a href="https://crt.sh/?Identity=%25&amp;amp;iCAID=7395"&gt;Let's Encrypt&lt;/a&gt;); La litt&amp;eacute;rature sur le sujet ne manque pas, mais je vais quand m&amp;ecirc;me en apporter une de plus, pour la partie compilation :-)&lt;/p&gt;
+&lt;p&gt;Pour rappel, Let's Encrypt, est un projet port&amp;eacute; par l' &amp;laquo; Internet Security Research Group &amp;raquo; (ISRG), qui vise &amp;agrave; automatiser, rendre accessible &amp;agrave; tous, de mani&amp;egrave;re ouverte et gratuite, des certificats SSL&lt;/p&gt;
+&lt;h2 id="generation"&gt;G&amp;eacute;n&amp;eacute;ration&lt;/h2&gt;
+&lt;p&gt;Nous allons ici, ne pas utiliser le client officiel; Principalement parce qu'il int&amp;egrave;gre trop de fonctionnalit&amp;eacute;s (serveur web int&amp;eacute;gr&amp;eacute;, &amp;hellip;), mais aussi parce qu'il ne r&amp;eacute;ponds pas vraiment aux besoins de cet article (arborescence flexible, serveur nginx, &amp;hellip;; et que c'est plus facile &amp;agrave; lire un script de 200 lignes qu'un &amp;eacute;norme client&amp;hellip;)&lt;/p&gt;
+&lt;p&gt;Le client que nous allons utiliser est donc le &lt;a href="https://github.com/diafygi/acme-tiny"&gt;acme-tiny&lt;/a&gt; (&amp;eacute;crit en python). Lors de mes p&amp;eacute;r&amp;eacute;grinations sur la toile (oui ok &amp;ccedil;a fait un peu vieillot, j'aurais pu dire &amp;laquo; alors que je surfais sur le web &amp;raquo;, &amp;hellip; :-D), je suis tomb&amp;eacute; sur ce script &lt;a href="https://github.com/lukas2511/letsencrypt.sh"&gt;letsencrypt.sh&lt;/a&gt;. Le cot&amp;eacute; FQDN &amp;agrave; un endroit, et le rechargement lorsque les AltNames changent sont des features appr&amp;eacute;ciables. Apr&amp;egrave;s c'est du bash, donc comme vous voulez :)&lt;/p&gt;
+&lt;h3&gt;Cr&amp;eacute;ation des certificats&lt;/h3&gt;
+&lt;p&gt;De mon cot&amp;eacute;, j'ai opt&amp;eacute; pour une arborescence de ce type (certificats g&amp;eacute;n&amp;eacute;r&amp;eacute;s dans un r&amp;eacute;pertoire d&amp;eacute;di&amp;eacute;, avec un utilisateur d&amp;eacute;di&amp;eacute;).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ mkdir -p /etc/letsencrypt/&lt;span class="o"&gt;{&lt;/span&gt;certs,challenges,csr,pem,private&lt;span class="o"&gt;}&lt;/span&gt;
+/etc/letsencrypt/
+├── certs
+├── challenges
+├── csr
+├── pem
+└── private
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Il suffit donc alors de :&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Cr&amp;eacute;er une cl&amp;eacute; pour le domaine en question&lt;/li&gt;
+&lt;li&gt;Cr&amp;eacute;er une demande de signature (CSR) en y incluant les noms DNS alternatifs&lt;/li&gt;
+&lt;li&gt;Lancer le client (qui va se charger de cr&amp;eacute;er un challenge) et signer si le challenge est ok.&lt;/li&gt;
+&lt;li&gt;T&amp;eacute;l&amp;eacute;charger et concat&amp;eacute;ner le certificat obtenu avec le certificat interm&amp;eacute;diaire de Let's Encrypt&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Le challenge sert ici &amp;agrave; ce que let's encrypt v&amp;eacute;rifie que nous contr&amp;ocirc;lons bien le
+domaine pour lequel nous demandons un certificat. Il faut d'ailleurs ajouter &amp;agrave;
+la configuration du serveur web, l'endroit o&amp;ugrave; seront stock&amp;eacute;s ces challenges.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="k"&gt;location&lt;/span&gt; &lt;span class="s"&gt;/.well-known/acme-challenge/&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kn"&gt;alias&lt;/span&gt; &lt;span class="s"&gt;/etc/letsencrypt/challenges/gitoyen.net/&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;try_files&lt;/span&gt; &lt;span class="nv"&gt;$uri&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Cot&amp;eacute; certificat interm&amp;eacute;diaire, ils sont disponibles sur le site de &lt;a href="https://letsencrypt.org/certificates/"&gt;Let's Encrypt&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Bon donc du coup &amp;ccedil;a donne cela dans un mini-script (pas super beau&amp;hellip;)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+&lt;span class="c1"&gt;# bootstrap letsencrypt&lt;/span&gt;
+
+&lt;span class="nv"&gt;account&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$1&lt;/span&gt;
+&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$2&lt;/span&gt;
+&lt;span class="nv"&gt;dns&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="nv"&gt;$3&lt;/span&gt;
+
+mkdir -p /etc/letsencrypt/&lt;span class="o"&gt;{&lt;/span&gt;certs,challenges,csr,pem,private&lt;span class="o"&gt;}&lt;/span&gt;
+
+&lt;span class="nb"&gt;pushd&lt;/span&gt; /etc/letsencrypt
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; ! -f &lt;span class="s2"&gt;"./private/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;account&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.key"&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+    openssl genrsa &lt;span class="m"&gt;4096&lt;/span&gt; &amp;gt; &lt;span class="s2"&gt;"./private/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;account&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.key"&lt;/span&gt;
+  &lt;span class="k"&gt;fi&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; ! -f ./pem/intermediate.pem &lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+    wget -O - https://letsencrypt.org/certs/lets-encrypt-x1-cross-signed.pem &amp;gt; ./pem/intermediate.pem
+  &lt;span class="k"&gt;fi&lt;/span&gt;
+  &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"##### &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; #####"&lt;/span&gt;
+  &lt;span class="k"&gt;if&lt;/span&gt; &lt;span class="o"&gt;[[&lt;/span&gt; ! -f &lt;span class="s2"&gt;"./private/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.key"&lt;/span&gt; &lt;span class="o"&gt;]]&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt; &lt;span class="k"&gt;then&lt;/span&gt;
+    openssl genrsa &lt;span class="m"&gt;4096&lt;/span&gt; &amp;gt; &lt;span class="s2"&gt;"./private/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.key"&lt;/span&gt;
+  &lt;span class="k"&gt;fi&lt;/span&gt;
+  mkdir -p &lt;span class="s2"&gt;"./challenges/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;
+  openssl req -new -sha256 -key &lt;span class="s2"&gt;"./private/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.key"&lt;/span&gt; -subj &lt;span class="s2"&gt;"/"&lt;/span&gt; -reqexts SAN -config &amp;lt;&lt;span class="o"&gt;(&lt;/span&gt;cat /etc/ssl/openssl.cnf &amp;lt;&lt;span class="o"&gt;(&lt;/span&gt;&lt;span class="nb"&gt;printf&lt;/span&gt; &lt;span class="s2"&gt;"[SAN]\nsubjectAltName=%s"&lt;/span&gt; &lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;dns&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;"&lt;/span&gt;&lt;span class="o"&gt;))&lt;/span&gt; &amp;gt; &lt;span class="s2"&gt;"./csr/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.csr"&lt;/span&gt;
+  acme_tiny.py --account-key &lt;span class="s2"&gt;"./private/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;account&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.key"&lt;/span&gt; --csr &lt;span class="s2"&gt;"./csr/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.csr"&lt;/span&gt; --acme-dir &lt;span class="s2"&gt;"/etc/letsencrypt/challenges/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;/"&lt;/span&gt; &amp;gt; &lt;span class="s2"&gt;"./certs/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.crt"&lt;/span&gt;
+  cat &lt;span class="s2"&gt;"./certs/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.crt"&lt;/span&gt; ./pem/intermediate.pem &amp;gt; &lt;span class="s2"&gt;"./pem/&lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt;.pem"&lt;/span&gt;
+&lt;span class="nb"&gt;popd&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Qu'il suffit de lancer comme ceci (pour l'exemple je g&amp;eacute;n&amp;egrave;re un certificate
+asral.fr avec comme domaines g&amp;eacute;r&amp;eacute;s gitoyen.net et planet.gitoyen.net (oui de la pub au passage))&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;$ bash bootstrap-letsencrypt.sh asrall gitoyen.net &lt;span class="s1"&gt;'DNS:gitoyen.net,DNS:planet.gitoyen.net'&lt;/span&gt;
+&lt;span class="c1"&gt;##### gitoyen.net #####&lt;/span&gt;
+Parsing account key...
+Parsing CSR...
+Registering account...
+Already registered!
+Verifying planet.gitoyen.net...
+planet.gitoyen.net verified!
+Verifying gitoyen.net...
+gitoyen.net verified!
+Signing certificate...
+Certificate signed!
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Plut&amp;ocirc;t cool non? Il suffit alors d'adapter la configuration du serveur web, pour
+prendre en compte ces certificats. Et passer tout en HTTPS! (dans notre cas,
+c'est un nginx en reverse proxy qui g&amp;egrave;re le SSL et forward en HTTP sur une IP
+priv&amp;eacute;e).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="c1"&gt;# Gitoyen&lt;/span&gt;
+&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kn"&gt;server_name&lt;/span&gt; &lt;span class="s"&gt;gitoyen.net&lt;/span&gt; &lt;span class="s"&gt;planet.gitoyen.net&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;rewrite&lt;/span&gt; &lt;span class="s"&gt;^(.*)&lt;/span&gt; &lt;span class="s"&gt;https://&lt;/span&gt;&lt;span class="nv"&gt;$host$1&lt;/span&gt; &lt;span class="s"&gt;permanent&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+
+&lt;span class="c1"&gt;# Gitoyen SSL&lt;/span&gt;
+&lt;span class="c1"&gt;# DNS:gitoyen.net,DNS:planet.gitoyen.net&lt;/span&gt;
+&lt;span class="k"&gt;server&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+  &lt;span class="kn"&gt;listen&lt;/span&gt; &lt;span class="mi"&gt;443&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl&lt;/span&gt; &lt;span class="no"&gt;on&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;client_max_body_size&lt;/span&gt; &lt;span class="s"&gt;20M&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;server_name&lt;/span&gt; &lt;span class="s"&gt;gitoyen.net&lt;/span&gt; &lt;span class="s"&gt;planet.gitoyen.net&lt;/span&gt; &lt;span class="s"&gt;asrall.sebian.fr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl_certificate&lt;/span&gt; &lt;span class="s"&gt;/etc/letsencrypt/pem/gitoyen.net.pem&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl_certificate_key&lt;/span&gt; &lt;span class="s"&gt;/etc/letsencrypt/private/gitoyen.net.key&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl_session_timeout&lt;/span&gt; &lt;span class="mi"&gt;5m&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl_protocols&lt;/span&gt; &lt;span class="s"&gt;TLSv1&lt;/span&gt; &lt;span class="s"&gt;TLSv1.1&lt;/span&gt; &lt;span class="s"&gt;TLSv1.2&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl_ciphers&lt;/span&gt; &lt;span class="s"&gt;ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:DHE-RSA-AES256-SHA:DHE-RSA-AES128-SHA&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl_session_cache&lt;/span&gt; &lt;span class="s"&gt;shared:SSL:50m&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl_prefer_server_ciphers&lt;/span&gt; &lt;span class="no"&gt;on&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl_dhparam&lt;/span&gt; &lt;span class="s"&gt;/etc/letsencrypt/dh4096.pem&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;ssl_ecdh_curve&lt;/span&gt; &lt;span class="s"&gt;secp384r1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;add_header&lt;/span&gt; &lt;span class="s"&gt;Strict-Transport-Security&lt;/span&gt; &lt;span class="s"&gt;max-age=15768000&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;resolver&lt;/span&gt; &lt;span class="mi"&gt;127&lt;/span&gt;&lt;span class="s"&gt;.0.0.1&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="kn"&gt;location&lt;/span&gt; &lt;span class="s"&gt;/.well-known/acme-challenge/&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kn"&gt;alias&lt;/span&gt; &lt;span class="s"&gt;/etc/letsencrypt/challenges/gitoyen.net/&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kn"&gt;try_files&lt;/span&gt; &lt;span class="nv"&gt;$uri&lt;/span&gt; &lt;span class="p"&gt;=&lt;/span&gt;&lt;span class="mi"&gt;404&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+  &lt;span class="kn"&gt;location&lt;/span&gt; &lt;span class="s"&gt;/&lt;/span&gt; &lt;span class="p"&gt;{&lt;/span&gt;
+    &lt;span class="kn"&gt;proxy_pass&lt;/span&gt;       &lt;span class="s"&gt;http://10.41.1.143&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kn"&gt;proxy_set_header&lt;/span&gt; &lt;span class="s"&gt;Host&lt;/span&gt; &lt;span class="nv"&gt;$host&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kn"&gt;proxy_set_header&lt;/span&gt; &lt;span class="s"&gt;X-Forwarded-For&lt;/span&gt; &lt;span class="nv"&gt;$proxy_add_x_forwarded_for&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kn"&gt;proxy_set_header&lt;/span&gt; &lt;span class="s"&gt;X-Real-IP&lt;/span&gt; &lt;span class="nv"&gt;$remote_addr&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kn"&gt;proxy_set_header&lt;/span&gt; &lt;span class="s"&gt;X-Forwarded-Proto&lt;/span&gt; &lt;span class="s"&gt;https&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+    &lt;span class="kn"&gt;proxy_set_header&lt;/span&gt; &lt;span class="s"&gt;X-Forwarded-Ssl&lt;/span&gt; &lt;span class="no"&gt;on&lt;/span&gt;&lt;span class="p"&gt;;&lt;/span&gt;
+  &lt;span class="p"&gt;}&lt;/span&gt;
+&lt;span class="p"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Pour la g&amp;eacute;n&amp;eacute;ration du dhparams (4096 bits c'est bien)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;openssl dhparam -out dh4096.pem 4096
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Et vous voila donc avec une super config et du HTTPS automatis&amp;eacute;, on peut aller
+faire un tour sur &lt;a href="https://tls.imirhil.fr/https/gitoyen.net"&gt;imirhil&lt;/a&gt; pour un
+check de la conf et bien s&amp;ucirc;r pour pouvoir briller en soci&amp;eacute;t&amp;eacute;&amp;hellip;&lt;/p&gt;
+&lt;h2 id="supervision"&gt;Supervision&lt;/h2&gt;
+&lt;p&gt;Bon c'est bien beau, mais avec tout &amp;ccedil;a les certificats sont valables que 90j
+(oui mort &amp;agrave; CertPatrol :-() mais pour le coup il va donc falloir superviser
+tout cela.&lt;/p&gt;
+&lt;h3&gt;Via Certificate Monitor&lt;/h3&gt;
+&lt;p&gt;Si vous utilisez le sympa &lt;a href="https://certificatemonitor.org/"&gt;certificatemonitor&lt;/a&gt; (&lt;a href="https://github.com/RaymiiOrg/certificate-expiry-monitor"&gt;code source&lt;/a&gt;) de Raymii, il suffit alors d'ajouter vos FQDN dans l'interface. Et ainsi recevoir une notification avant l'expiration de vos certificats.&lt;/p&gt;
+&lt;h3&gt;Via Checkmk&lt;/h3&gt;
+&lt;p&gt;Sinon si vous avez d&amp;eacute;j&amp;agrave; une bonne veille supervision &amp;agrave; base de nagios ou checkmk ou compatible, il suffit d'ajouter les checks via le script &lt;code&gt;check_http&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Dans la conf &lt;code&gt;main.mk&lt;/code&gt; de checkmk:&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;# /etc/checkmk/main.mk
+legacy_checks = [
+  ## Gitoyen
+  ( ( "check-certificate!gitoyen.net", "Certificate Gitoyen - Letsencrypt", True), ['baloo.sebian.fr']),
+  ( ( "check-certificate!planet.gitoyen.net", "Certificate Planet Gitoyen - Letsencrypt", True), ['baloo.sebian.fr']),
+]
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Et ne pas oublier la &lt;code&gt;check_command&lt;/code&gt; associ&amp;eacute;e (on &amp;eacute;met un warning lorsque que le certificat expire &amp;agrave; J-30 et un critical &amp;agrave; J-7)&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="err"&gt;#&lt;/span&gt;&lt;span class="x"&gt; /etc/checkmk/conf.d/commands_extra.mk&lt;/span&gt;
+&lt;span class="x"&gt;define command &lt;/span&gt;&lt;span class="err"&gt;{&lt;/span&gt;&lt;span class="x"&gt;&lt;/span&gt;
+&lt;span class="x"&gt;  command_name    check-certificate&lt;/span&gt;
+&lt;span class="x"&gt;  command_line    &lt;/span&gt;&lt;span class="p"&gt;$&lt;/span&gt;&lt;span class="nv"&gt;USER1&lt;/span&gt;&lt;span class="p"&gt;$&lt;/span&gt;&lt;span class="x"&gt;/check_http -H &lt;/span&gt;&lt;span class="p"&gt;$&lt;/span&gt;&lt;span class="nv"&gt;ARG1&lt;/span&gt;&lt;span class="p"&gt;$&lt;/span&gt;&lt;span class="x"&gt; -C 30,7 --sni&lt;/span&gt;
+&lt;span class="x"&gt;}&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id="renouvellement"&gt;Renouvellement&lt;/h2&gt;
+&lt;p&gt;Il existe des scripts de renouvellement automatique:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href="https://github.com/octopuce/octopuce-goodies/tree/master/letsencrypt-renew"&gt;letsencrypt-renew&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href="https://github.com/lukas2511/letsencrypt.sh"&gt;letsencrypt.sh&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Mais je ne sais pas encore quoi en penser, pour le moment je r&amp;eacute;agit lorsque que
+le check passe en warning avec ce mini script bash.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="ch"&gt;#!/bin/bash&lt;/span&gt;
+
+&lt;span class="nv"&gt;account&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'asrall'&lt;/span&gt;
+&lt;span class="nv"&gt;certs&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'gitoyen.net planet.gitoyen.net'&lt;/span&gt;
+
+&lt;span class="nb"&gt;pushd&lt;/span&gt; /etc/letsencrypt
+  &lt;span class="k"&gt;for&lt;/span&gt; cert in &lt;span class="nv"&gt;$certs&lt;/span&gt;
+  &lt;span class="k"&gt;do&lt;/span&gt;
+    &lt;span class="nb"&gt;echo&lt;/span&gt; &lt;span class="s2"&gt;"##### &lt;/span&gt;&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;&lt;span class="s2"&gt; #####"&lt;/span&gt;
+    acme_tiny.py --account-key ./private/labriqueinternet.key --csr ./csr/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.csr --acme-dir /etc/letsencrypt/challenges/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;/ &amp;gt; ./certs/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.crt
+    cat ./certs/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.crt ./pem/intermediate.pem &amp;gt; ./pem/&lt;span class="si"&gt;${&lt;/span&gt;&lt;span class="nv"&gt;cert&lt;/span&gt;&lt;span class="si"&gt;}&lt;/span&gt;.pem
+  &lt;span class="k"&gt;done&lt;/span&gt;
+&lt;span class="nb"&gt;popd&lt;/span&gt;
+systemctl restart nginx
+&lt;/pre&gt;&lt;/div&gt;
+&lt;h2 id="chocolat"&gt;Chocolat&lt;/h2&gt;
+&lt;p&gt;M&amp;ecirc;me si le mod&amp;egrave;le des CA et bancal, il n'y a plus de raison maintenant de ne pas proposer du HTTPS partout!&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">gitoyen</dc:creator><pubDate>Mon, 07 Mar 2016 20:00:00 +0100</pubDate><guid isPermaLink="false">tag:,2016-03-07:blog/yet-another-tutorial-about-lets-encrypt.html</guid><category>https</category><category>letsencrypt</category></item><item><title>Pytest Fixture</title><link>/blog/pytest-fixture.html</link><description>&lt;p&gt;I am a huge fan of python (one of the best language in my toolbox). And
+when it comes to tests, &lt;a href="http://pytest.org/"&gt;pytest&lt;/a&gt; is &lt;em&gt;THE&lt;/em&gt; library to use.&lt;/p&gt;
+&lt;p&gt;I also use &lt;a href="http://flask.pocoo.org/"&gt;Flask&lt;/a&gt; a lot, so today I will show you
+some of my snippets.&lt;/p&gt;
+&lt;p&gt;This create an app fixture which will be used to test the application, it
+returns a test client to interact with my Flask application.&lt;/p&gt;
+&lt;p&gt;It is an adaptation of the documentation [testing skeleton]
+(http://flask.pocoo.org/docs/0.10/testing/#the-testing-skeleton)&lt;/p&gt;
+&lt;p&gt;I also replace the json encoder by a custom one (it allows me to dump mock
+object for example).&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="nd"&gt;@pytest.yield_fixture&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;request_context&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="p"&gt;):&lt;/span&gt;
+    &lt;span class="sd"&gt;"""Provide a Flask request context for testing purpose"""&lt;/span&gt;
+
+    &lt;span class="k"&gt;with&lt;/span&gt; &lt;span class="n"&gt;app&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;application&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;test_request_context&lt;/span&gt;&lt;span class="p"&gt;()&lt;/span&gt; &lt;span class="k"&gt;as&lt;/span&gt; &lt;span class="n"&gt;req_context&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt;
+        &lt;span class="k"&gt;yield&lt;/span&gt; &lt;span class="n"&gt;req_context&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;This one applies a request context on a testing function, this can be
+useful if you manipulate werzeug interactions (flask request attribute mostly).
+This has to be use when the
+&lt;code&gt;RuntimeError: working outside of application context&lt;/code&gt; error is raised.&lt;/p&gt;
+&lt;p&gt;In the most common use case you will not need the &lt;code&gt;req_context&lt;/code&gt; variable during
+your test. To avoid to have an unused argument, you can simply use the
+&lt;code&gt;@pytest.mark.usefixtures('request_context')&lt;/code&gt; decorator on your testing
+function.&lt;/p&gt;
+&lt;p&gt;Last one is also an opportunity to talk about
+&lt;a href="http://peewee.readthedocs.org/en/latest/"&gt;peewee&lt;/a&gt; which is a great lightweight
+ORM. Like a lot of ORM peewee provides a [transaction decorator]
+(http://docs.peewee-orm.com/en/latest/peewee/transactions.html)
+, in unittest you may want to test endpoints without connecting to a db.
+So, here is an example on how you can replace the decorator
+(or contextmanager) by a dummy one.&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre&gt;&lt;span&gt;&lt;/span&gt;&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;imp&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;contextlib&lt;/span&gt;
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;pytest&lt;/span&gt;
+
+&lt;span class="kn"&gt;import&lt;/span&gt; &lt;span class="nn"&gt;database&lt;/span&gt;
+
+&lt;span class="nd"&gt;@pytest.fixture&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;autouse&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="bp"&gt;True&lt;/span&gt;&lt;span class="p"&gt;,&lt;/span&gt; &lt;span class="n"&gt;scope&lt;/span&gt;&lt;span class="o"&gt;=&lt;/span&gt;&lt;span class="s1"&gt;'session'&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;span class="k"&gt;def&lt;/span&gt; &lt;span class="nf"&gt;mock_transaction&lt;/span&gt;&lt;span class="p"&gt;():&lt;/span&gt;
+    &lt;span class="sd"&gt;"""Replace the atomic decorator from peewee to a noop one"""&lt;/span&gt;
+
+    &lt;span class="n"&gt;database&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;atomic&lt;/span&gt; &lt;span class="o"&gt;=&lt;/span&gt; &lt;span class="n"&gt;contextlib&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;contextmanager&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;lambda&lt;/span&gt;&lt;span class="p"&gt;:&lt;/span&gt; &lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="k"&gt;yield&lt;/span&gt;&lt;span class="p"&gt;))&lt;/span&gt;
+    &lt;span class="n"&gt;imp&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;reload&lt;/span&gt;&lt;span class="p"&gt;(&lt;/span&gt;&lt;span class="n"&gt;module&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;using&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;db&lt;/span&gt;&lt;span class="o"&gt;.&lt;/span&gt;&lt;span class="n"&gt;transactions&lt;/span&gt;&lt;span class="p"&gt;)&lt;/span&gt;
+&lt;/pre&gt;&lt;/div&gt;
+&lt;p&gt;Pytest use a lot of the python flexibility and I must confess that I love it.&lt;/p&gt;</description><dc:creator xmlns:dc="http://purl.org/dc/elements/1.1/">gitoyen</dc:creator><pubDate>Tue, 14 Apr 2015 00:00:00 +0200</pubDate><guid isPermaLink="false">tag:,2015-04-14:blog/pytest-fixture.html</guid><category>python</category><category>dev</category></item></channel></rss>

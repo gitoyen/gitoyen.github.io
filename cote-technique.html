@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
     <title>Côté technique</title>
-    <link rel="stylesheet"
-      href="/theme/css/main.css" />
+    <link rel="stylesheet" href="/theme/css/main.css">
 
 
-
-    <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700|Lato:400,300,400italic,700' rel='stylesheet' type='text/css'>
+    <link href="https://gitoyen.net/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Gitoyen RSS Feed">
 
     <script src="/theme/scripts/jquery-2.1.4.min.js"></script>
     <script src="/theme/scripts/jquery.sticky.js"></script>
@@ -20,10 +20,17 @@
   </head>
 
   <body id="index" class="home">
-    <header id="banner" class="body">
+    <header id="banner">
       <div id="headerContainer">
         <div id="logo">
-          <img src="/theme/images/logo_blc.png" alt="Gitoyen">
+          <a href="/index.html"></a>
+        </div>
+        <div class="burger">
+          <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
         </div>
         <nav>
           <ul>
@@ -45,23 +52,24 @@
             <li >
               <a href="/contact.html">Contact</a>
             </li>
-            <li><a href="#" class="icon" id="search"></a></li>
-            <li><a href="#" class="icon" id="twitter"></a></li>
-            <li><a href="#" class="icon" id="rss"></a></li>
+            <li class="icon twitter"><a href="https://twitter.com/gitoyen"> </a></li>
+            <li class="icon rss"><a href="https://gitoyen.net/feeds/all.rss.xml"> </a></li>
           </ul>
         </nav>
       </div>
     </header><!-- /#banner -->
 
-<section id="content" class="body">
-    <h1 class="entry-title">Côté technique</h1>
+    <div class="cacheMenu"></div>
+    <div class="container">
 
-    
-    <p>Apprends neophyte !</p>
+  <h1 class="entry-title col1of1"><span>Côté technique</span></h1>
 
-</section>
+  
+  <p>Apprends neophyte !</p>
 
-    <footer id="contentinfo" class="body">
+    </div>
+    <footer id="contentinfo">
+      <a href="#">Mentions légales</a>
     </footer>
 
   </body>

@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <meta charset="utf-8" />
-    <title>Accueil</title>
-    <link rel="stylesheet"
-      href="/theme/css/main.css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <title>Gitoyen</title>
+    <link rel="stylesheet" href="/theme/css/main.css">
 
 
-
-    <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700|Lato:400,300,400italic,700' rel='stylesheet' type='text/css'>
+    <link href="https://gitoyen.net/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Gitoyen RSS Feed">
 
     <script src="/theme/scripts/jquery-2.1.4.min.js"></script>
     <script src="/theme/scripts/jquery.sticky.js"></script>
@@ -20,10 +20,17 @@
   </head>
 
   <body id="index" class="home">
-    <header id="banner" class="body">
+    <header id="banner">
       <div id="headerContainer">
         <div id="logo">
-          <img src="/theme/images/logo_blc.png" alt="Gitoyen">
+          <a href="/index.html"></a>
+        </div>
+        <div class="burger">
+          <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
         </div>
         <nav>
           <ul>
@@ -45,24 +52,174 @@
             <li >
               <a href="/contact.html">Contact</a>
             </li>
-            <li><a href="#" class="icon" id="search"></a></li>
-            <li><a href="#" class="icon" id="twitter"></a></li>
-            <li><a href="#" class="icon" id="rss"></a></li>
+            <li class="icon twitter"><a href="https://twitter.com/gitoyen"> </a></li>
+            <li class="icon rss"><a href="https://gitoyen.net/feeds/all.rss.xml"> </a></li>
           </ul>
         </nav>
       </div>
     </header><!-- /#banner -->
 
-<section id="content" class="body">
-    <h1 class="entry-title">Accueil</h1>
+    <div class="cacheMenu"></div>
+    <div class="container">
 
-    
-    <p>[TOC]</p>
-<h1>Bienvenue</h1>
+<div id="content-home">
+
+  
+  <section class="col1of1 m3t">
+  <div class="col1of2">
+    <h1>Gitoyen</h1>
+    <h2>Opérateur réseau, LIR et dinosaures.</h2>
+  </div>
+
+  <img class="col1of2" src="../images/pessin2.png" alt="Pas de profits">
+
+  <blockquote class="quote-valeurs col1of2"><p>" Pour qu'Internet reste neutre et décentralisé. "</p></blockquote>
+  <div class="clearfix"></div>
+  <hr id="first-sep">
+
+  <div class="pre1of3 col2of3">
+  <p class="presentation m1">
+  Gitoyen est une association loi 1901, à but non lucratif. Notre objectif ? Un internet décentralisé et neutre, notamment en facilitant l'émergence et l'existence de petits opérateurs réseau.
+  </p>
+  </div>
 
 </section>
 
-    <footer id="contentinfo" class="body">
+<section class="col1of1 m1y">
+<div class="col1of1">
+  <h3><span>Nos valeurs</span></h3>
+  <hr>
+  </div>
+
+  <div class="col1of3">
+    <div class="col1of1 row7 p2">
+      <img src="../images/nonprofit.jpg" alt="Pas de profits" class="pre1of6 col2of3">
+    </div>
+    <h4>Pas de profits</h4>
+    <p>Construire un opérateur sans but lucratif et respectant la neutralité du réseau.</p>
+  </div>
+
+  <div class="col1of3">
+    <img src="../images/partager.jpg" alt="Du partage" class="col1of1 row7 p2">
+    <h4>Du partage</h4>
+    <p>Partager nos connaissances, nos expériences avec les autres bénévoles.</p>
+  </div>
+
+  <div class="col1of3">
+    <img src="../images/collaborer.jpg" alt="De l'entraide" class="col1of1 row7 p2">
+    <h4>De l'entraide</h4>
+    <p>Aider d'autres opérateurs sans but lucratif à faire de même.</p>
+  </div>
+
+  <a href="gitoyen.html" class="bouton">Plus d'info sur Gitoyen</a>
+
+</section>
+
+<section class="col1of1 m1y">
+
+  <h3><span>Nos services</span></h3>
+  <hr>
+  <ul class="services">
+    <li class="col1of2 row8">
+    <span>1.</span>
+    <h4>Transit Internet</h4>
+    <p>Gitoyen est un opérateur Internet disposant de ses propres liens de communication avec le reste d'Internet. Dans ce cadre nous sommes en mesure de fournir une vue complète d'Internet (du Transit) à nos membres ou nos clients.</p>
+    </li>
+
+    <li class="col1of2 row8">
+    <span>2.</span>
+    <h4>LIR / obtention de ressources Internet</h4>
+    <p>Gitoyen est un registre local d'Internet (LIR). Cela lui donne la possibilité d'assigner des ressources : blocs d'adresses IP ou numéros d'AS.</p>
+    </li>
+
+
+    <li class="col1of2 row8">
+    <span>3. </span>
+    <h4>Commutation et routage</h4>
+    <p>Nous proposons à nos membres la possibilité d'utiliser notre infrastructure de commutation et notre infrastructure de routage.</p>
+    </li>
+
+    <li class="col1of2 row8">
+    <span>4.</span>
+    <h4>Hébergement d'équipement</h4>
+    <p>Gitoyen dispose de deux points de présence basés à Paris avec notre propre espace d'hébergement d'équipement. L'un à Téléhouse - Paris Voltaire et l'autre à Paris Bourse.  </p>
+    </li>
+  </ul>
+  <a href="services-de-gitoyen.html" class="bouton">Le détail de nos services</a>
+
+</section>
+
+<section class="col1of1 m1y">
+  <h3><span>Actualités</span></h3>
+  <hr>
+</section>
+      <ol id="posts-list" class="hfeed">
+  <li>
+    <article class="hentry">
+      <header>
+        <h2>
+          <a href="/blog/yet-another-tutorial-about-lets-encrypt.html" rel="bookmark" title="Permalink to Yet another tutorial about Let's Encrypt">
+            Yet another tutorial about Let's Encrypt
+          </a>
+        </h2>
+      </header>
+
+      <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2016-03-07T20:00:00+01:00">
+                Published: Mon 07 March 2016
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/gitoyen.html">gitoyen</a>
+        </address>
+<p>In <a href="/category/tech.html">Tech</a>.</p>
+<p>tags: <a href="/tag/https.html">https</a> <a href="/tag/letsencrypt.html">letsencrypt</a> </p>
+</footer><!-- /.post-info -->        <p><img alt="Logo Let's Encrypt" src="//letsencrypt.org/images/letsencrypt-logo-horizontal.svg"/></p>
+<p>Voil&agrave; 1 million de certificats <a href="//letsencrypt.org/">Let's Encrypt</a> d&eacute;livr&eacute;s (les certificats d&eacute;livr&eacute;s par <a href="https://crt.sh/?Identity=%25&amp;iCAID=7395">Let's Encrypt</a>); La litt&eacute;rature sur le sujet ne manque pas, mais je vais quand m&ecirc;me en apporter une de plus, pour la partie compilation :-)</p>
+<p>Pour rappel, Let's Encrypt, est ...</p>
+        <a class="readmore" href="/blog/yet-another-tutorial-about-lets-encrypt.html">read more</a>
+      </div><!-- /.entry-content -->
+
+    </article>
+  </li>
+  <li>
+    <article class="hentry">
+      <header>
+        <h2>
+          <a href="/blog/pytest-fixture.html" rel="bookmark" title="Permalink to Pytest Fixture">
+            Pytest Fixture
+          </a>
+        </h2>
+      </header>
+
+      <div class="entry-content">
+<footer class="post-info">
+        <abbr class="published" title="2015-04-14T00:00:00+02:00">
+                Published: Tue 14 April 2015
+        </abbr>
+
+        <address class="vcard author">
+                By                         <a class="url fn" href="/author/gitoyen.html">gitoyen</a>
+        </address>
+<p>In <a href="/category/tuto.html">tuto</a>.</p>
+<p>tags: <a href="/tag/python.html">python</a> <a href="/tag/dev.html">dev</a> </p>
+</footer><!-- /.post-info -->        <p>I am a huge fan of python (one of the best language in my toolbox). And
+when it comes to tests, <a href="http://pytest.org/">pytest</a> is <em>THE</em> library to use.</p>
+<p>I also use <a href="http://flask.pocoo.org/">Flask</a> a lot, so today I will show you
+some of my snippets.</p>
+<p>This create an app fixture which will ...</p>
+        <a class="readmore" href="/blog/pytest-fixture.html">read more</a>
+      </div><!-- /.entry-content -->
+
+    </article>
+  </li>
+  </ol>
+</div>
+
+    </div>
+    <footer id="contentinfo">
+      <a href="#">Mentions légales</a>
     </footer>
 
   </body>

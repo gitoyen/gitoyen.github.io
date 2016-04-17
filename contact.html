@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="fr">
   <head>
-    <meta charset="utf-8" />
-    <title>Contact</title>
-    <link rel="stylesheet"
-      href="/theme/css/main.css" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+    <title>Gitoyen</title>
+    <link rel="stylesheet" href="/theme/css/main.css">
 
 
-
-    <link href='https://fonts.googleapis.com/css?family=Oswald:400,300,700|Lato:400,300,400italic,700' rel='stylesheet' type='text/css'>
+    <link href="https://gitoyen.net/feeds/all.rss.xml" type="application/rss+xml" rel="alternate" title="Gitoyen RSS Feed">
 
     <script src="/theme/scripts/jquery-2.1.4.min.js"></script>
     <script src="/theme/scripts/jquery.sticky.js"></script>
@@ -20,10 +20,17 @@
   </head>
 
   <body id="index" class="home">
-    <header id="banner" class="body">
+    <header id="banner">
       <div id="headerContainer">
         <div id="logo">
-          <img src="/theme/images/logo_blc.png" alt="Gitoyen">
+          <a href="/index.html"></a>
+        </div>
+        <div class="burger">
+          <ul>
+            <li></li>
+            <li></li>
+            <li></li>
+          </ul>
         </div>
         <nav>
           <ul>
@@ -45,65 +52,95 @@
             <li  class="active">
               <a href="/contact.html">Contact</a>
             </li>
-            <li><a href="#" class="icon" id="search"></a></li>
-            <li><a href="#" class="icon" id="twitter"></a></li>
-            <li><a href="#" class="icon" id="rss"></a></li>
+            <li class="icon twitter"><a href="https://twitter.com/gitoyen"> </a></li>
+            <li class="icon rss"><a href="https://gitoyen.net/feeds/all.rss.xml"> </a></li>
           </ul>
         </nav>
       </div>
     </header><!-- /#banner -->
 
-<section id="content" class="body">
-    <h1 class="entry-title">Contact</h1>
-    <nav id="side-nav">
-      <div id="toc"><ul><li><a class="toc-href" href="#" title="Contact">Contact</a><ul><li><a class="toc-href" href="#par-courrier-electronique" title="Par courrier &eacute;lectronique">Par courrier &eacute;lectronique</a></li><li><a class="toc-href" href="#par-messagerie-instantanee" title="Par messagerie instantan&eacute;e">Par messagerie instantan&eacute;e</a></li><li><a class="toc-href" href="#par-courrier-postal" title="Par courrier postal">Par courrier postal</a></li><li><a class="toc-href" href="#sur-les-media-sociaux" title="Sur les m&eacute;dia sociaux">Sur les m&eacute;dia sociaux</a></li><li><a class="toc-href" href="#contact-durgence" title="Contact d" urgence'="">Contact d'urgence</a></li></ul></li></ul></div>
-    </nav>
-    <div id="side-content">
+    <div class="cacheMenu"></div>
+    <div class="container">
 
-    
-    <h1>Contact</h1>
-<h2 id="par-courrier-electronique">Par courrier &eacute;lectronique</h2>
-<p>Vous pouvez contacter Gitoyen par mail :</p>
+<div id="content-contact">
+
+  
+  <h2>Contactez-nous</h2>
+
+<h3>Par mail</h3>
+
+<div class="row"> 
+<section class="mails">
+    <ul>
+        <li> <strong>contact@</strong> - un bon premier point de contact</li>
+        <li> <strong>noc@</strong> - si vous avez des soucis « opérateur » (problèmes de routage, de transit,…)</li>
+        <li> <strong>peering@</strong> - si vous souhaitez établir une session de peering avec nous </li> 
+        <li> <strong>abuse@</strong> - l'adresse est lue ;)</li>
+    </ul>
+</section>
+</div>
+
+<h3>Par IRC</h3>
+
+<div class="row">
+<section class="irc">
+    <ul>
+    <li><strong>#gitoyen</strong>- Canal de Gitoyen</li>
+    <li><strong><a href="http://geeknode.net">GeekNode</a> </strong>- Réseau</li>
+    <li><strong>irc.geeknode.net </strong>- Serveur</li>
+    </ul>
+</section>
+</div>
+
+<h3>Par courrier</h3>
+
+<div class="row">
+<section class="courrier">
+    <p class="adresse">
+        <strong>Gitoyen<br></strong>    
+        21 ter rue Voltaire<br>
+        75011 Paris
+    </p>
+</section>
+</div>
+
+<h3>Sur Twitter</h3>
+
+<div class="row">
+<section class="cpt-twitter">
+    <ul>
+        <li><a href="https://twitter.com/gitoyen">@gitoyen</a> pour la communication formelle, et les annonces.</li>
+        <li><a href="https://twitter.com/as20766">@as20766</a> plus informel..</li>
+    </ul>
+</section>
+</div>
+
+<h3>Contact d'urgence</h3>
+
+<div class="row">
+<section class="urgence">
+    En cas d'extrême urgence, et si le contact mail `contact@` ne réponds pas,
+    Gitoyen peut aussi être contacté par téléphone via le numéro fournit dans la
+    base de donné du RIPE.<br>
+    <strong>whois -h whois.ripe.net AS20766</strong>
+</section>
+</div>
+
+<h2>Outils pour les opérateurs</h2>
+
 <ul>
-<li><code>contact@</code> est un bon premier point de contact ;</li>
-<li><code>noc@</code> si vous avez des soucis &laquo; op&eacute;rateur &raquo; (probl&egrave;mes de routage, de transit,&hellip;) ;</li>
-<li><code>peering@</code> si vous souhaitez &eacute;tablir une session de peering avec nous ;</li>
-<li>l'adresse <code>abuse@</code> est lue ;).</li>
+    <li><a href="http://lg.gitoyen.net/">Looking-glass</a></li>
+    <li><a href="http://ring.nlnog.net/">Ring nlnog</a></li>
+    <li><a href="http://debian.gitoyen.net/">Mirroir debian</a></li>
+    <li><a href="http://observium.gitoyen.net/">Observium</a></li>
+    <li><a href="http://smokeping.gitoyen.net/">Smokeping</a></li>
 </ul>
-<h2 id="par-messagerie-instantanee">Par messagerie instantan&eacute;e</h2>
-<p>Sur IRC, le canal de Gitoyen est <code>#gitoyen</code> sur le r&eacute;seau <a href="http://geeknode.net">GeekNode</a>, sur le serveur <code>irc.geeknode.net</code>.</p>
-<h2 id="par-courrier-postal">Par courrier postal</h2>
-<p>Par voie postale, &agrave; notre adresse.</p>
-<pre><code>Gitoyen
-21 ter rue Voltaire
-75011 Paris
-</code></pre>
-<h2 id="sur-les-media-sociaux">Sur les m&eacute;dia sociaux</h2>
-<p>Sur twitter, nous utilisons (peu) ces deux comptes :</p>
-<ul>
-<li><a href="https://twitter.com/gitoyen">@gitoyen</a> pour la communication formelle, et les annonces.</li>
-<li><a href="https://twitter.com/as20766">@as20766</a> plus informel..</li>
-</ul>
-<h2 id="contact-durgence">Contact d'urgence</h2>
-<p>En cas d'extr&ecirc;me urgence, et si le contact mail <code>contact@</code> ne r&eacute;ponds pas,
-Gitoyen peut aussi &ecirc;tre contact&eacute; par t&eacute;l&eacute;phone via le num&eacute;ro fournit dans la
-base de donn&eacute; du RIPE.</p>
-<pre><code>whois -h whois.ripe.net AS20766
-</code></pre>
-<h1>Outils</h1>
-<p>Gitoyen dispose de plusieurs outils &agrave; destination des op&eacute;rateurs.</p>
-<ul>
-<li><a href="http://lg.gitoyen.net/">looking-glass</a></li>
-<li><a href="http://ring.nlnog.net/">ring nlnog</a></li>
-<li><a href="http://debian.gitoyen.net/">mirroir debian</a></li>
-<li><a href="http://observium.gitoyen.net/">observium</a></li>
-<li><a href="http://smokeping.gitoyen.net/">smokeping</a></li>
-</ul>
+
+</div>
 
     </div>
-</section>
-
-    <footer id="contentinfo" class="body">
+    <footer id="contentinfo">
+      <a href="#">Mentions légales</a>
     </footer>
 
   </body>
